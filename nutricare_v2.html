@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GiziKu — Aplikasi Asuhan Gizi</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --c:#F7F3EC;--c2:#EDE5D6;--c3:#DDD3C0;
+  --abu:#8C8880;--abu2:#5A5752;--abu3:#323130;
+  --pk:#D4849A;--pk2:#E8B4C0;--pk3:#F5DDE4;--pk4:#FDF0F3;
+  --w:#FEFCF9;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--c);color:var(--abu3);overflow-x:hidden;}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:0 6%;height:60px;background:rgba(247,243,236,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--c2);}
+.logo{font-family:'Lora',serif;font-style:italic;font-size:20px;color:var(--abu3);}
+.logo b{font-style:normal;color:var(--pk);font-weight:500;}
+.topnav{display:flex;gap:28px;list-style:none;}
+.topnav a{font-size:13px;color:var(--abu);text-decoration:none;transition:.2s;}
+.topnav a:hover{color:var(--pk);}
+.topbtn{background:var(--pk);color:#fff;border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Sora',sans-serif;transition:.2s;}
+.topbtn:hover{background:var(--abu2);}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:60px;}
+.hero-left{padding:80px 6% 60px;display:flex;flex-direction:column;justify-content:center;background:var(--c);}
+.hero-right{background:var(--abu3);display:flex;align-items:center;justify-content:center;padding:60px 40px;position:relative;overflow:hidden;}
+.hero-right::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(212,132,154,0.12);top:-80px;right:-80px;}
+.hero-right::after{content:'';position:absolute;width:250px;height:250px;border-radius:50%;background:rgba(212,132,154,0.08);bottom:-40px;left:-40px;}
+
+/* PHONE MOCKUP */
+.phone{width:240px;height:480px;background:var(--c);border-radius:36px;border:8px solid #222;position:relative;z-index:2;box-shadow:0 40px 80px rgba(0,0,0,0.4);overflow:hidden;}
+.phone-notch{width:80px;height:20px;background:#222;border-radius:0 0 12px 12px;margin:0 auto;position:relative;z-index:3;}
+.phone-screen{background:var(--pk4);height:100%;padding:12px 14px 60px;}
+.phone-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.phone-greeting{font-size:9px;color:var(--abu);}
+.phone-name{font-size:12px;color:var(--abu3);font-weight:600;margin-top:1px;}
+.phone-avatar{width:28px;height:28px;border-radius:50%;background:var(--pk2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--pk);}
+.phone-card{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--pk3);}
+.phone-card-label{font-size:8px;color:var(--abu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.phone-card-val{font-size:16px;font-weight:600;color:var(--abu3);}
+.phone-card-sub{font-size:8px;color:var(--pk);margin-top:2px;}
+.phone-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.phone-mini{background:#fff;border-radius:10px;padding:10px;border:1px solid var(--pk3);}
+.phone-mini-icon{font-size:14px;margin-bottom:4px;}
+.phone-mini-label{font-size:7px;color:var(--abu);margin-bottom:2px;}
+.phone-mini-val{font-size:11px;font-weight:600;color:var(--abu3);}
+.phone-bar{height:4px;background:var(--c2);border-radius:4px;margin-top:3px;overflow:hidden;}
+.phone-bar-fill{height:100%;border-radius:4px;background:var(--pk);}
+.phone-notif{background:var(--pk3);border:1px solid var(--pk2);border-radius:12px;padding:10px 12px;}
+.phone-notif-label{font-size:8px;color:var(--pk);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.phone-notif-text{font-size:10px;color:var(--abu2);line-height:1.5;}
+.phone-nav{position:absolute;bottom:0;left:0;right:0;height:50px;background:#fff;border-top:1px solid var(--c2);display:flex;align-items:center;justify-content:space-around;}
+.phone-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:6px;color:var(--abu);}
+.phone-nav-item.active{color:var(--pk);}
+.phone-nav-icon{font-size:14px;}
+
+.pill{display:inline-block;background:var(--pk3);color:var(--pk);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-bottom:20px;}
+h1.hero-title{font-family:'Lora',serif;font-size:clamp(32px,3.5vw,52px);line-height:1.15;font-weight:500;color:var(--abu3);margin-bottom:18px;}
+h1.hero-title em{color:var(--pk);font-style:italic;}
+.hero-sub{font-size:15px;color:var(--abu);line-height:1.8;font-weight:300;margin-bottom:36px;max-width:440px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-a{background:var(--abu3);color:var(--c);padding:13px 28px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none;transition:.2s;border:none;cursor:pointer;font-family:'Sora',sans-serif;}
+.btn-a:hover{background:var(--pk);}
+.btn-b{background:transparent;color:var(--abu2);padding:12px 24px;border-radius:10px;font-size:14px;border:1.5px solid var(--c3);text-decoration:none;transition:.2s;}
+.btn-b:hover{border-color:var(--pk);color:var(--pk);}
+
+/* STRIP */
+.strip{background:var(--pk);padding:32px 6%;display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:24px;}
+.snum{text-align:center;}
+.snum-n{font-family:'Lora',serif;font-size:36px;font-style:italic;color:#fff;line-height:1;}
+.snum-l{font-size:12px;color:rgba(255,255,255,0.75);margin-top:4px;font-weight:300;}
+
+/* SECTIONS */
+.sec-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--abu);font-weight:500;margin-bottom:10px;}
+.sec-h{font-family:'Lora',serif;font-size:clamp(26px,3vw,40px);font-weight:500;color:var(--abu3);margin-bottom:12px;line-height:1.2;}
+.sec-h em{color:var(--pk);font-style:italic;}
+.sec-p{font-size:15px;color:var(--abu);line-height:1.8;font-weight:300;}
+
+/* PENGGUNA */
+.who{padding:80px 6%;background:var(--w);}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
+.who-card{border-radius:20px;padding:32px;position:relative;overflow:hidden;transition:.3s;}
+.who-card:hover{transform:translateY(-4px);}
+.who-card.c-ag{background:var(--abu3);}
+.who-card.c-ps{background:var(--pk3);border:1px solid var(--pk2);}
+.who-card.c-mn{background:var(--c2);border:1px solid var(--c3);}
+.who-num{font-family:'Lora',serif;font-size:64px;font-style:italic;opacity:.15;position:absolute;top:16px;right:20px;line-height:1;}
+.who-card.c-ag .who-num{color:#fff;}
+.who-card.c-ps .who-num{color:var(--pk);}
+.who-card.c-mn .who-num{color:var(--abu);}
+.who-icon{font-size:28px;margin-bottom:16px;}
+.who-card h3{font-size:18px;font-weight:600;margin-bottom:10px;}
+.who-card.c-ag h3{color:#fff;}
+.who-card.c-ps h3,.who-card.c-mn h3{color:var(--abu3);}
+.who-card ul{list-style:none;}
+.who-card ul li{font-size:13px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-weight:300;}
+.who-card.c-ag ul li{color:rgba(255,255,255,0.75);border-color:rgba(255,255,255,0.1);}
+.who-card.c-ps ul li,.who-card.c-mn ul li{color:var(--abu2);}
+.who-card ul li:last-child{border:none;}
+.who-card ul li::before{content:'→ ';opacity:.5;}
+
+/* MODUL ZIGZAG */
+.moduls{padding:80px 6%;background:var(--c);}
+.modul-list{margin-top:52px;}
+.modul-item{display:grid;grid-template-columns:1fr 1fr;border-radius:24px;overflow:hidden;margin-bottom:20px;transition:.3s;}
+.modul-item:hover{transform:scale(1.005);}
+.modul-item.flip{direction:rtl;}
+.modul-item.flip > *{direction:ltr;}
+.modul-text{padding:40px 44px;display:flex;flex-direction:column;justify-content:center;}
+.bg-dark{background:var(--abu3);}
+.bg-pink{background:var(--pk3);}
+.bg-cream{background:var(--c2);}
+.bg-white{background:var(--w);}
+.modul-num{font-family:'Lora',serif;font-size:13px;font-style:italic;margin-bottom:14px;font-weight:500;}
+.bg-dark .modul-num{color:var(--pk2);}
+.bg-pink .modul-num,.bg-cream .modul-num,.bg-white .modul-num{color:var(--pk);}
+.modul-text h3{font-family:'Lora',serif;font-size:22px;font-weight:500;margin-bottom:12px;line-height:1.3;}
+.bg-dark h3{color:#fff;}
+.bg-pink h3,.bg-cream h3,.bg-white h3{color:var(--abu3);}
+.modul-text p{font-size:13.5px;line-height:1.75;font-weight:300;}
+.bg-dark p{color:rgba(255,255,255,0.65);}
+.bg-pink p,.bg-cream p,.bg-white p{color:var(--abu);}
+.modul-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px;}
+.modul-tag{font-size:11px;padding:4px 10px;border-radius:6px;}
+.bg-dark .modul-tag{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+.bg-pink .modul-tag{background:rgba(212,132,154,0.18);color:var(--pk);}
+.bg-cream .modul-tag,.bg-white .modul-tag{background:var(--c3);color:var(--abu2);}
+.modul-visual{display:flex;align-items:center;justify-content:center;font-size:80px;min-height:220px;position:relative;overflow:hidden;}
+.v-cream{background:var(--c2);}
+.v-dark{background:#222;}
+.v-pink{background:var(--pk2);}
+.v-w{background:var(--w);}
+.v-abu{background:var(--abu2);}
+.modul-visual::after{content:attr(data-label);position:absolute;bottom:16px;right:16px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;opacity:.35;}
+.v-cream::after,.v-w::after{color:var(--abu3);}
+.v-dark::after,.v-abu::after{color:#fff;}
+.v-pink::after{color:var(--abu3);}
+
+/* DETAIL */
+.detail{padding:80px 6%;background:var(--w);}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:52px;}
+.detail-card{background:var(--c);border-radius:16px;padding:28px;border-left:3px solid var(--pk2);transition:.3s;}
+.detail-card:hover{background:var(--pk4);border-color:var(--pk);}
+.detail-card h4{font-size:15px;font-weight:600;margin-bottom:10px;color:var(--abu3);}
+.detail-card ul{list-style:none;}
+.detail-card ul li{font-size:13px;color:var(--abu);padding:4px 0;font-weight:300;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.detail-card ul li::before{content:'·';color:var(--pk);font-size:18px;line-height:1;flex-shrink:0;}
+
+/* PENYAKIT */
+.penyakit{padding:80px 6%;background:var(--abu3);}
+.penyakit .sec-eyebrow{color:var(--pk2);}
+.penyakit .sec-h{color:#fff;}
+.penyakit .sec-p{color:rgba(255,255,255,0.6);}
+.penyakit-row{display:flex;gap:20px;margin-top:48px;flex-wrap:wrap;}
+.penyakit-card{flex:1;min-width:200px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;text-align:center;transition:.3s;}
+.penyakit-card:hover{background:rgba(212,132,154,0.15);border-color:var(--pk2);}
+.penyakit-emoji{font-size:40px;margin-bottom:16px;}
+.penyakit-card h3{font-family:'Lora',serif;font-size:20px;font-style:italic;color:#fff;margin-bottom:8px;}
+.penyakit-card p{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;font-weight:300;}
+
+/* EXTRAS */
+.extras{padding:80px 6%;background:var(--c);}
+.extras-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;}
+.extra{background:var(--w);border-radius:16px;padding:24px 20px;border:1px solid var(--c2);transition:.3s;}
+.extra:hover{border-color:var(--pk2);transform:translateY(-3px);}
+.extra-em{font-size:24px;margin-bottom:12px;}
+.extra h4{font-size:14px;font-weight:600;color:var(--abu3);margin-bottom:6px;}
+.extra p{font-size:12.5px;color:var(--abu);line-height:1.6;font-weight:300;}
+
+/* CTA */
+.cta-band{padding:80px 6%;background:var(--pk3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:32px;}
+.cta-band h2{font-family:'Lora',serif;font-size:clamp(24px,3vw,38px);font-style:italic;color:var(--abu3);max-width:560px;line-height:1.3;}
+.cta-band h2 b{font-style:normal;color:var(--pk);}
+
+/* FOOTER */
+footer{background:var(--abu3);padding:60px 6% 28px;}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.foot-brand{font-family:'Lora',serif;font-style:italic;font-size:22px;color:#fff;margin-bottom:12px;}
+.foot-brand b{font-style:normal;color:var(--pk2);}
+.foot-desc{font-size:13px;color:var(--abu);line-height:1.7;font-weight:300;}
+.foot-col h5{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:16px;font-weight:500;}
+.foot-col ul{list-style:none;}
+.foot-col li{margin-bottom:10px;}
+.foot-col a{font-size:13px;color:var(--abu);text-decoration:none;transition:.2s;font-weight:300;}
+.foot-col a:hover{color:var(--pk2);}
+.foot-bot{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.2);}
+
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .who-grid,.extras-row{grid-template-columns:1fr;}
+  .modul-item,.modul-item.flip{grid-template-columns:1fr;direction:ltr;}
+  .modul-visual{min-height:120px;font-size:50px;}
+  .detail-grid{grid-template-columns:1fr;}
+  .foot-top{grid-template-columns:1fr 1fr;}
+  .topnav{display:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><em>Gizi</em><b>Ku</b></div>
+  <ul class="topnav">
+    <li><a href="#pengguna">Pengguna</a></li>
+    <li><a href="#modul">Modul</a></li>
+    <li><a href="#penyakit">Penyakit</a></li>
+    <li><a href="#fitur-lain">Lainnya</a></li>
+  </ul>
+  <button class="topbtn">Daftar Sekarang</button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="pill">🌿 Aplikasi Asuhan Gizi Digital</span>
+    <h1 class="hero-title">Gizi Optimal<br>dimulai dari <em>sini.</em></h1>
+    <p class="hero-sub">Platform digital terintegrasi untuk ahli gizi dan pasien — assessment, diagnosis, intervensi, monitoring, hingga komunikasi dua arah dalam satu aplikasi.</p>
+    <div class="hero-btns">
+      <a href="#modul" class="btn-a">Eksplorasi Fitur</a>
+      <a href="#pengguna" class="btn-b">Untuk Siapa?</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div>
+            <div class="phone-greeting">Selamat pagi,</div>
+            <div class="phone-name">Ahli Gizi 👋</div>
+          </div>
+          <div class="phone-avatar">AG</div>
+        </div>
+        <div class="phone-card">
+          <div class="phone-card-label">Status Pasien Hari Ini</div>
+          <div class="phone-card-val">12 Pasien</div>
+          <div class="phone-card-sub">↑ 3 perlu review monitoring</div>
+        </div>
+        <div class="phone-row">
+          <div class="phone-mini">
+            <div class="phone-mini-icon">⚖️</div>
+            <div class="phone-mini-label">Rata-rata BB</div>
+            <div class="phone-mini-val">62.4 kg</div>
+            <div class="phone-bar"><div class="phone-bar-fill" style="width:68%"></div></div>
+          </div>
+          <div class="phone-mini">
+            <div class="phone-mini-icon">🍽️</div>
+            <div class="phone-mini-label">Kepatuhan makan</div>
+            <div class="phone-mini-val">78%</div>
+            <div class="phone-bar"><div class="phone-bar-fill" style="width:78%"></div></div>
+          </div>
+        </div>
+        <div class="phone-notif">
+          <div class="phone-notif-label">Notifikasi</div>
+          <div class="phone-notif-text">Pasien Rina — recall 24 jam belum diisi hari ini.</div>
+        </div>
+      </div>
+      <div class="phone-nav">
+        <div class="phone-nav-item active"><div class="phone-nav-icon">🏠</div>Beranda</div>
+        <div class="phone-nav-item"><div class="phone-nav-icon">👤</div>Pasien</div>
+        <div class="phone-nav-item"><div class="phone-nav-icon">📊</div>Monitor</div>
+        <div class="phone-nav-item"><div class="phone-nav-icon">💬</div>Chat</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="snum"><div class="snum-n">8</div><div class="snum-l">Modul Lengkap</div></div>
+  <div class="snum"><div class="snum-n">3</div><div class="snum-l">Jenis Pengguna</div></div>
+  <div class="snum"><div class="snum-n">3+</div><div class="snum-l">Penyakit Kronis</div></div>
+  <div class="snum"><div class="snum-n">100%</div><div class="snum-l">Berbasis Klinis</div></div>
+</div>
+
+<!-- PENGGUNA -->
+<section class="who" id="pengguna">
+  <div class="sec-eyebrow">Untuk Siapa?</div>
+  <h2 class="sec-h">Tiga Tipe <em>Pengguna</em></h2>
+  <p class="sec-p">GiziKu dirancang untuk tiga kelompok pengguna dengan tampilan dan fitur yang disesuaikan kebutuhannya masing-masing.</p>
+  <div class="who-grid">
+    <div class="who-card c-ag">
+      <div class="who-num">01</div>
+      <div class="who-icon">🩺</div>
+      <h3>Ahli Gizi</h3>
+      <ul>
+        <li>Input & analisis data klinis pasien</li>
+        <li>Diagnosis masalah gizi terstruktur</li>
+        <li>Kalkulasi intervensi gizi otomatis</li>
+        <li>Dashboard monitoring multi-pasien</li>
+        <li>Gunakan mandiri tanpa pasien</li>
+        <li>Rujuk pasien antar fasilitas</li>
+      </ul>
+    </div>
+    <div class="who-card c-ps">
+      <div class="who-num">02</div>
+      <div class="who-icon">🌸</div>
+      <h3>Pasien</h3>
+      <ul>
+        <li>Isi recall 24 jam & kebiasaan makan</li>
+        <li>Laporan makanan & timbang BB</li>
+        <li>Lihat anjuran diet & leaflet gizi</li>
+        <li>Chat langsung dengan ahli gizi</li>
+        <li>Notifikasi pengingat makan & obat</li>
+        <li>Akses mandiri jika putus konsultasi</li>
+      </ul>
+    </div>
+    <div class="who-card c-mn">
+      <div class="who-num">03</div>
+      <div class="who-icon">🏃</div>
+      <h3>Klien Sehat Mandiri</h3>
+      <ul>
+        <li>Hitung status gizi & BMI</li>
+        <li>Analisis asupan makan personal</li>
+        <li>Anjuran gizi seimbang otomatis</li>
+        <li>Tanpa perlu konsultasi ahli gizi</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- MODUL ZIGZAG -->
+<section class="moduls" id="modul">
+  <div class="sec-eyebrow">Modul Aplikasi</div>
+  <h2 class="sec-h">Delapan Modul <em>Terintegrasi</em></h2>
+  <p class="sec-p">Setiap modul terhubung satu sama lain, membentuk alur asuhan gizi yang sistematis dari awal hingga akhir.</p>
+  <div class="modul-list">
+
+    <div class="modul-item">
+      <div class="modul-text bg-dark">
+        <div class="modul-num">Modul 01 — Registrasi & Profil</div>
+        <h3>Daftar & Kelola Profil Pengguna</h3>
+        <p>Sistem registrasi terpisah untuk pasien dan ahli gizi. Setiap pengguna memiliki profil lengkap yang menjadi dasar seluruh proses asuhan gizi.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Profil Pasien</span>
+          <span class="modul-tag">Profil Ahli Gizi</span>
+          <span class="modul-tag">Autentikasi Aman</span>
+        </div>
+      </div>
+      <div class="modul-visual v-cream" data-label="REGISTRASI">👤</div>
+    </div>
+
+    <div class="modul-item flip">
+      <div class="modul-text bg-pink">
+        <div class="modul-num">Modul 02 — Asuhan Gizi</div>
+        <h3>Proses Asuhan Gizi Menyeluruh</h3>
+        <p>Modul inti yang menghubungkan assessment, diagnosis, dan intervensi gizi dalam satu alur terstruktur dan mudah diikuti oleh ahli gizi.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Alur Terstruktur</span>
+          <span class="modul-tag">Berbasis PAGT</span>
+        </div>
+      </div>
+      <div class="modul-visual v-pink" data-label="ASUHAN GIZI">🌿</div>
+    </div>
+
+    <div class="modul-item">
+      <div class="modul-text bg-white">
+        <div class="modul-num">Modul 03 — Assessment Gizi</div>
+        <h3>Analisis Data Pasien Lengkap</h3>
+        <p>Kumpulkan dan analisis empat domain data pasien secara menyeluruh. Sistem otomatis menandai data bermasalah sebagai dasar diagnosis gizi.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Antropometri</span>
+          <span class="modul-tag">Biokimia</span>
+          <span class="modul-tag">Fisik Klinis</span>
+          <span class="modul-tag">Kebiasaan Makan</span>
+          <span class="modul-tag">Recall 24 Jam</span>
+          <span class="modul-tag">Riwayat Penyakit</span>
+        </div>
+      </div>
+      <div class="modul-visual v-w" data-label="ASSESSMENT">📋</div>
+    </div>
+
+    <div class="modul-item flip">
+      <div class="modul-text bg-cream">
+        <div class="modul-num">Modul 04 — Diagnosis Gizi</div>
+        <h3>Identifikasi Masalah Gizi</h3>
+        <p>Ahli gizi merumuskan diagnosis berdasarkan kumpulan masalah dari hasil assessment. Dicatat sistematis sebagai acuan intervensi berikutnya.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Input oleh AG</span>
+          <span class="modul-tag">Berbasis Assessment</span>
+          <span class="modul-tag">Terstruktur</span>
+        </div>
+      </div>
+      <div class="modul-visual v-abu" data-label="DIAGNOSIS">🔍</div>
+    </div>
+
+    <div class="modul-item">
+      <div class="modul-text bg-dark">
+        <div class="modul-num">Modul 05 — Intervensi Gizi</div>
+        <h3>Kalkulasi Kebutuhan Gizi Otomatis</h3>
+        <p>Hitung kebutuhan energi dan zat gizi harian otomatis berdasarkan data klinis. Dilengkapi panduan pembagian makan dan daftar makanan boleh/tidak boleh.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Kalori & Protein</span>
+          <span class="modul-tag">Kalium & Natrium</span>
+          <span class="modul-tag">Fosfor & Cairan</span>
+          <span class="modul-tag">Leaflet Diet</span>
+        </div>
+      </div>
+      <div class="modul-visual v-cream" data-label="INTERVENSI">⚖️</div>
+    </div>
+
+    <div class="modul-item flip">
+      <div class="modul-text bg-pink">
+        <div class="modul-num">Modul 06 — Monitoring</div>
+        <h3>Dashboard Pemantauan Ahli Gizi</h3>
+        <p>Pantau BB, data lab, fisik klinis, dan kepatuhan makan pasien secara real-time. Berikan catatan dan rekomendasi. Pasien dapat apresiasi dan motivasi otomatis.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Pantau BB</span>
+          <span class="modul-tag">Data Lab</span>
+          <span class="modul-tag">Kepatuhan Makan</span>
+          <span class="modul-tag">Rekomendasi AG</span>
+          <span class="modul-tag">Motivasi Pasien</span>
+        </div>
+      </div>
+      <div class="modul-visual v-pink" data-label="MONITORING">📊</div>
+    </div>
+
+    <div class="modul-item">
+      <div class="modul-text bg-cream">
+        <div class="modul-num">Modul 07 — Laporan & Log</div>
+        <h3>Catatan Harian & Laporan Periodik</h3>
+        <p>Pasien mencatat konsumsi makanan harian beserta tanggal. Laporan dianalisis untuk evaluasi asupan dan perkembangan lab serta fisik klinis secara berkala.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Log Makan Harian</span>
+          <span class="modul-tag">Evaluasi Periodik</span>
+          <span class="modul-tag">Laporan Lab</span>
+        </div>
+      </div>
+      <div class="modul-visual v-w" data-label="LAPORAN">📁</div>
+    </div>
+
+    <div class="modul-item flip">
+      <div class="modul-text bg-dark">
+        <div class="modul-num">Modul 08 — Analisis Pengguna</div>
+        <h3>Statistik & Testimoni Pengguna</h3>
+        <p>Pantau jumlah ahli gizi aktif, status gizi pasien secara agregat, dan kelola testimoni pengguna untuk meningkatkan kepercayaan aplikasi.</p>
+        <div class="modul-tags">
+          <span class="modul-tag">Jumlah AG</span>
+          <span class="modul-tag">Status Gizi Pasien</span>
+          <span class="modul-tag">Testimoni</span>
+        </div>
+      </div>
+      <div class="modul-visual v-abu" data-label="ANALISIS">📈</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DETAIL ASSESSMENT -->
+<section class="detail">
+  <div class="sec-eyebrow">Detail Modul Assessment</div>
+  <h2 class="sec-h">Apa Saja yang <em>Dianalisis?</em></h2>
+  <p class="sec-p">Assessment mencakup empat domain data klinis lengkap untuk menghasilkan gambaran status gizi pasien yang komprehensif.</p>
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h4>📏 Data Antropometri</h4>
+      <ul>
+        <li>Analisis status gizi otomatis</li>
+        <li>Kalkulasi berat badan ideal</li>
+        <li>Estimasi berat badan (BB estimasi)</li>
+      </ul>
+    </div>
+    <div class="detail-card">
+      <h4>🧪 Data Biokimia</h4>
+      <ul>
+        <li>Diinput oleh ahli gizi</li>
+        <li>Hasil pemeriksaan laboratorium</li>
+        <li>Analisis data lab yang bermasalah</li>
+      </ul>
+    </div>
+    <div class="detail-card">
+      <h4>🩺 Data Fisik Klinis</h4>
+      <ul>
+        <li>Diagnosa medis pasien</li>
+        <li>Pemeriksaan penunjang fisik</li>
+        <li>Analisis data fisik yang bermasalah</li>
+      </ul>
+    </div>
+    <div class="detail-card">
+      <h4>🍽️ Kebiasaan & Asupan Makan</h4>
+      <ul>
+        <li>Entri frekuensi makan</li>
+        <li>Kebiasaan makan & makanan kesukaan</li>
+        <li>Alergi dan pantangan makan</li>
+        <li>Recall 24 jam</li>
+        <li>Analisis tingkat konsumsi</li>
+        <li>Deteksi kebiasaan makan yang salah</li>
+      </ul>
+    </div>
+    <div class="detail-card" style="grid-column:1/-1;">
+      <h4>📋 Data Riwayat Penyakit</h4>
+      <ul style="display:flex;flex-wrap:wrap;gap:0 40px;">
+        <li>Riwayat penyakit terdahulu</li>
+        <li>Riwayat penyakit keluarga</li>
+        <li>Kondisi komorbid yang relevan</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PENYAKIT -->
+<section class="penyakit" id="penyakit">
+  <div class="sec-eyebrow">Kondisi yang Didukung</div>
+  <h2 class="sec-h">Fokus Penyakit <em>Kronis</em></h2>
+  <p class="sec-p">GiziKu dirancang dengan perhitungan gizi khusus untuk penyakit kronis yang memerlukan penatalaksanaan nutrisi ketat dan berkelanjutan.</p>
+  <div class="penyakit-row">
+    <div class="penyakit-card">
+      <div class="penyakit-emoji">🫘</div>
+      <h3>Penyakit Ginjal</h3>
+      <p>Penatalaksanaan ketat kalium, natrium, fosfor, dan cairan sesuai stage penyakit ginjal pasien</p>
+    </div>
+    <div class="penyakit-card">
+      <div class="penyakit-emoji">❤️</div>
+      <h3>Hipertensi</h3>
+      <p>Pengaturan asupan natrium, lemak, dan pola makan berbasis DASH untuk kontrol tekanan darah</p>
+    </div>
+    <div class="penyakit-card">
+      <div class="penyakit-emoji">🔬</div>
+      <h3>Asam Urat</h3>
+      <p>Panduan diet rendah purin, manajemen cairan, dan pemantauan makanan pemicu asam urat</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXTRAS -->
+<section class="extras" id="fitur-lain">
+  <div class="sec-eyebrow">Fitur Pendukung</div>
+  <h2 class="sec-h">Lebih dari Sekadar <em>Catatan</em></h2>
+  <div class="extras-row">
+    <div class="extra">
+      <div class="extra-em">💬</div>
+      <h4>Chat Pasien & AG</h4>
+      <p>Komunikasi dua arah langsung antara pasien dan ahli gizi dalam satu platform</p>
+    </div>
+    <div class="extra">
+      <div class="extra-em">🔔</div>
+      <h4>Notifikasi Pengingat</h4>
+      <p>Pengingat waktu makan, pencatatan asupan, dan konsumsi obat atau suplemen</p>
+    </div>
+    <div class="extra">
+      <div class="extra-em">🔄</div>
+      <h4>Rujukan Pasien</h4>
+      <p>Pindah asuhan dari RS ke Puskesmas atau praktik mandiri, dan sebaliknya</p>
+    </div>
+    <div class="extra">
+      <div class="extra-em">🔓</div>
+      <h4>Akses Mandiri</h4>
+      <p>Pasien tetap bisa akses aplikasi meski konsultasi berakhir. AG bisa pakai mandiri tanpa koneksi pasien.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-band">
+  <h2>Siap digitalisasi <b>proses asuhan gizi</b> kamu?</h2>
+  <button class="btn-a" style="font-size:15px;padding:15px 36px;border-radius:10px;">Mulai Sekarang &rarr;</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <div class="foot-brand"><em>Gizi</em><b>Ku</b></div>
+      <p class="foot-desc">Platform asuhan gizi digital yang menghubungkan ahli gizi dan pasien untuk hasil klinis yang lebih baik dan terukur.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Modul</h5>
+      <ul>
+        <li><a href="#modul">Registrasi & Profil</a></li>
+        <li><a href="#modul">Assessment Gizi</a></li>
+        <li><a href="#modul">Intervensi</a></li>
+        <li><a href="#modul">Monitoring</a></li>
+        <li><a href="#modul">Laporan & Log</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Pengguna</h5>
+      <ul>
+        <li><a href="#pengguna">Ahli Gizi</a></li>
+        <li><a href="#pengguna">Pasien</a></li>
+        <li><a href="#pengguna">Klien Mandiri</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Info</h5>
+      <ul>
+        <li><a href="#">Tentang Kami</a></li>
+        <li><a href="#penyakit">Penyakit</a></li>
+        <li><a href="#">Kontak</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <span>&copy; 2025 GiziKu. Semua hak dilindungi.</span>
+    <span>Dibuat untuk kesehatan Indonesia 🌿</span>
+  </div>
+</footer>
+
+</body>
+</html>
